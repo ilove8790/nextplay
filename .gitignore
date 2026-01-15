@@ -1,1 +1,9 @@
-".vscode/" 
+.vscode/
+__pycache__/
+*.pyc
+.env
+secrets.yaml
+*.db
+*.version
+.DS_Store
+token.json
