@@ -65,6 +65,8 @@ function checkVideoAndAct() {
     if (video.paused && !video.ended && video.readyState > 2) {
         attemptAutoPlay(video);
     }
+    // 3. 팝업 확인 버튼 감지 (비디오 상태와 무관하게 언제든 뜰 수 있음)
+    handleConfirmPopup();
 }
 
 function attemptAutoPlay(video) {
@@ -149,9 +151,43 @@ function handleVideoEnded() {
     const interval = setInterval(() => {
         attempts++;
         if (clickNextButton() || attempts > 10) {
-            clearInterval(interval);
+            // Next button clicked or timed out.
+            // Even if clicked, we might need to handle the popup that appears AFTER click.
+            // The checkVideoAndAct loop handles the popup globally, but we can also check here explicitly.
         }
+        if (attempts > 10) clearInterval(interval);
     }, 1000);
+}
+
+function handleConfirmPopup() {
+    // User Provided Confirm Button:
+    // <button onclick="video_confirm()" style="...">확인</button>
+
+    // Strategy: Look for button with specific text and onclick attribute (if accessible)
+    // Note: checking onclick attribute directly in DOM might return null if attached via JS,
+    // but here it seems inline.
+
+    // 1. onclick + text match
+    const buttons = document.querySelectorAll('button');
+    for (let btn of buttons) {
+        if (btn.innerText.trim() === '확인') {
+            const onclickAttr = btn.getAttribute('onclick');
+            if (onclickAttr && onclickAttr.includes('video_confirm')) {
+                console.log("NextPlay Auto: Clicking Confirm Popup Button");
+                btn.click();
+                return true;
+            }
+
+            // Fallback: If style matches specific color #f44f7e
+            const style = window.getComputedStyle(btn);
+            if (style.backgroundColor === 'rgb(244, 79, 126)') { // #f44f7e
+                console.log("NextPlay Auto: Clicking Confirm Popup Button (Color Match)");
+                btn.click();
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function clickNextButton() {
