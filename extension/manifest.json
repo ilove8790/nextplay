@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "NextPlay Auto for LG Display LMS",
+    "name": "NextPlay",
     "version": "1.0",
-    "description": "Auto play and auto next for LG Display LMS videos.",
+    "description": "Automatic play and skip videos.",
     "permissions": [
         "activeTab",
         "scripting",
